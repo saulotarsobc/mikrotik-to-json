@@ -1,0 +1,6 @@
+venv
+__*
+*.spec
+*.ps1
+# .gitig*
+build
