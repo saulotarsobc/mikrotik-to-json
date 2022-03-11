@@ -7,18 +7,13 @@ import sys
 
 if __name__ == '__main__':
 
-    path = pathlib.Path(__file__).parent.resolve()
-    with open('{}/mikrotikBgp.log'.format(path), 'a') as log_file:
-        log_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        params = " ".join(sys.argv[1:])
-        # print('{} {}'.format(log_time, params), file=log_file)
-
     if len(sys.argv) < 6:
         print("{} <IP> <USER> <PASS> <API_PORT> <METHOD>".format(sys.argv[0]))
         sys.exit(1)
 
     if sys.argv[5] == 'getPeerInfo' and len(sys.argv) < 7:
-        print("{} <IP> <USER> <PASS> <API_PORT> <METHOD> <PEER_NAME>".format(sys.argv[0]))
+        print("{} <IP> <USER> <PASS> <API_PORT> <METHOD> <PEER_NAME>".format(
+            sys.argv[0]))
         sys.exit(1)
 
     ip = sys.argv[1]
@@ -28,17 +23,18 @@ if __name__ == '__main__':
     method = sys.argv[5]
 
     router = Mikrotik()
-    router.connect(host=ip, username=username, password=password, port=api_port)
+    router.connect(host=ip, username=username,
+                   password=password, port=api_port)
 
     if router.error:
-        print("0")
+        print("error")
         sys.exit(1)
 
     if method == 'getPeers':
         response = router.get_all_bgp_peers()
 
         if router.error or not response:
-            print("")
+            print("not response")
             sys.exit(1)
 
         print(json.dumps(response).replace(" ", ""))
@@ -53,14 +49,18 @@ if __name__ == '__main__':
 
         if len(sys.argv) >= 8:
             item = sys.argv[7]
+
             if item in response['data']:
                 item_response = response['data'][item]
+
                 if isinstance(item_response, str):
                     item_response = item_response.replace(" ", "")
                 print(response['data'][item])
+
             else:
                 print("0")
                 sys.exit(1)
+
         else:
             print(json.dumps(response).replace(" ", ""))
 
